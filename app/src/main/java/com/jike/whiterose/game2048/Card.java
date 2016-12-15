@@ -19,16 +19,16 @@ public class Card extends FrameLayout {
     private TextView lable;
 
 
-
     //这里是默认的构造函数
     public Card(Context context) {
         super(context);
-        lable=new TextView(context);
+        lable = new TextView(context);
         lable.setTextSize(32);
         lable.setGravity(Gravity.CENTER);
+        lable.setBackground(getResources().getDrawable(R.drawable.tvborder));
         //宽高设置为-1，代表填充满整个父级容器
-        LayoutParams lp=new LayoutParams(-1,-1);
-        addView(lable,lp);
+        LayoutParams lp = new LayoutParams(-1, -1);
+        addView(lable, lp);
         setNum(0);
 
     }
@@ -40,15 +40,20 @@ public class Card extends FrameLayout {
 
     public void setNum(int num) {
         this.num = num;
-        lable.setText(num+"");
+        if (num <= 0) {
+            lable.setText("");
+        } else {
+            lable.setText(num + "");
+        }
     }
 
     /**
      * 这个方法判断两张卡片是否能折叠在一起
+     *
      * @param obj
      * @return
      */
     public boolean equals(Card obj) {
-        return getNum()==obj.getNum();
+        return getNum() == obj.getNum();
     }
 }
