@@ -1,6 +1,8 @@
 package com.jike.whiterose.game2048;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -63,21 +65,16 @@ public class GameView extends GridLayout {
                             if (offsetX < -5) {
                                 swipeLeft();
                                 Log.d("left", "left");
-                                addRandomNum();
                             } else if (offsetX > 5) {
                                 swipeRight();
-                                Log.d("right", "right");
-                                addRandomNum();
                             }
                         } else {
                             if (offsetY < -5) {
                                 swipeUp();
                                 Log.d("up", "up");
-                                addRandomNum();
                             } else if (offsetY > 5) {
                                 swipeDown();
                                 Log.d("down", "down");
-                                addRandomNum();
                             }
                         }
                         break;
@@ -144,11 +141,7 @@ public class GameView extends GridLayout {
         //开始添加两个随机数
         addRandomNum();
         addRandomNum();
-        addRandomNum();
-        addRandomNum();
-        addRandomNum();
-        addRandomNum();
-        addRandomNum();
+
     }
 
     /**
@@ -170,6 +163,59 @@ public class GameView extends GridLayout {
         //给对应于位置添加数字2和4的概率为9:1
         cardMap[p.x][p.y].setNum(Math.random() > 0.1 ? 2 : 4);
 
+    }
+
+    /**
+     * 这个方法判断游戏是否结束，游戏结束有两个条件：
+     * 1就是没有多余的空格了
+     * 2就是任何方向上都没有相邻的两个位置有空位置了
+     */
+    private void checkComplete() {
+        //定义TRUE代表达到结束的条件，可以结束
+        boolean complete = true;
+
+        //下面这句定义的是一个标签
+        ALL:
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                if (cardMap[x][y].getNum() == 0 ||
+                        (x > 0 && cardMap[x][y].equals(cardMap[x - 1][y])) ||
+                        (x < 3 && cardMap[x][y].equals(cardMap[x + 1][y])) ||
+                        (y > 0 && cardMap[x][y].equals(cardMap[x][y - 1])) ||
+                        (y < 3 && cardMap[x][y].equals(cardMap[x][y + 1]))
+                        ) {
+                    complete = false;
+                    break ALL;
+                }
+            }
+        }
+//        ALL:
+//        for (int y = 0; y < 4; y++) {
+//            for (int x = 0; x < 4; x++) {
+//
+//                if (cardMap[x][y].getNum() == 0 ||
+//                        (x > 0 && cardMap[x][y].equals(cardMap[x - 1][y])) ||
+//                        (x < 3 && cardMap[x][y].equals(cardMap[x + 1][y])) ||
+//                        (y > 0 && cardMap[x][y].equals(cardMap[x][y - 1])) ||
+//                        (y < 3 && cardMap[x][y].equals(cardMap[x][y + 1]))
+//                        ) {
+//                    Log.d("complete", complete + "***");
+//                    complete = false;
+//                    break ALL;
+//                }
+//            }
+//        }
+        if (complete) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("你好")
+                    .setMessage("游戏结束")
+                    .setPositiveButton("重来", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            startGame();
+                        }
+                    }).show();
+        }
     }
 
     private void swipeLeft() {
@@ -210,6 +256,7 @@ public class GameView extends GridLayout {
         }
         if (merge) {
             addRandomNum();
+            checkComplete();
         }
 
     }
@@ -238,7 +285,7 @@ public class GameView extends GridLayout {
             }
         }
         if (merge) {
-            addRandomNum();
+            addRandomNum();  checkComplete();
         }
     }
 
@@ -274,7 +321,7 @@ public class GameView extends GridLayout {
             }
         }
         if (merge) {
-            addRandomNum();
+            addRandomNum();  checkComplete();
         }
     }
 
@@ -310,7 +357,7 @@ public class GameView extends GridLayout {
             }
         }
         if (merge) {
-            addRandomNum();
+            addRandomNum();  checkComplete();
         }
     }
 
